@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30406.217
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SportsStore", "SportsStore\SportsStore.csproj", "{EECE7196-D428-4900-8AC4-1210194D1B0A}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SportsStore.Domain", "SportsStore.Domain\SportsStore.Domain.csproj", "{01121757-892C-4898-AFCA-E68C21D842FB}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SportsStore.WebUI", "SportsStore.WebUI\SportsStore.WebUI.csproj", "{BDD32DAE-EE45-4D7B-990D-7D480CE1D3EA}"
@@ -17,10 +15,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{EECE7196-D428-4900-8AC4-1210194D1B0A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{EECE7196-D428-4900-8AC4-1210194D1B0A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{EECE7196-D428-4900-8AC4-1210194D1B0A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{EECE7196-D428-4900-8AC4-1210194D1B0A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{01121757-892C-4898-AFCA-E68C21D842FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{01121757-892C-4898-AFCA-E68C21D842FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{01121757-892C-4898-AFCA-E68C21D842FB}.Release|Any CPU.ActiveCfg = Release|Any CPU

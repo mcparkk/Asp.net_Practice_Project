@@ -35,13 +35,15 @@ namespace SportsStore.WebUI.Controllers
             // Product 인스턴스랑 model 인스턴스를 같이 모델로 보낸다.
             ProductsListViewModel model = new ProductsListViewModel
             {
-                Products = repository.Products.Where(x => x.Category == null || x.Category == category).OrderBy(x => x.ProductID).Skip((page - 1) * pageSize).Take(pageSize),
+                Products = category == null ? repository.Products.OrderBy(x => x.ProductID).Skip((page - 1) * pageSize).Take(pageSize)
+                : repository.Products.Where(x => x.Category == category).OrderBy(x => x.ProductID).Skip((page - 1) * pageSize).Take(pageSize),
+                //Products = repository.Products.Where(x => x.Category == null || x.Category == category).OrderBy(x => x.ProductID).Skip((page - 1) * pageSize).Take(pageSize),
                 
                 PagingInfo = new PagingInfo
                 {
                     CurrentPage = page,
                     ItemsPerPage = pageSize,
-                    TotalItems = repository.Products.Count()
+                    TotalItems = category == null? repository.Products.Count() : repository.Products.Where(x=>x.Category == category).Count()
                 },
                 
                 CurrentCategory = category

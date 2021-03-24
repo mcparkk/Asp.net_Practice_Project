@@ -20,34 +20,36 @@ namespace SportsStore.WebUI.Controllers
             repository = repo;
         }
 
-        public ViewResult Index(string returnUrl)
+        public ViewResult Index(Cart cart, string returnUrl)
         {
             return View(new CartIndexViewModel
             {
-                Cart = GetCart(),
+                //Cart = GetCart(),             
+                //=> session에 있는 개체가 아니라 IModelBinder을 사용하여 만들어진 인스턴스를 사용 
+                Cart = cart,
                 ReturnUrl = returnUrl
             });
         }
 
-        public RedirectToRouteResult AddToCart(int productId, string returnUrl)
+        public RedirectToRouteResult AddToCart(Cart cart, int productId, string returnUrl)
         {
             Product product = repository.Products.FirstOrDefault(x => x.ProductID == productId);
 
             // return형에 따른 메소드 사용
             if(product != null)
-                GetCart().AddItems(product, 1);
+                cart.AddItems(product, 1);
 
             return RedirectToAction("Index", new { returnUrl });
         }
 
-        public RedirectToRouteResult RemoveFromCart(int productId, string returnUtl)
+        public RedirectToRouteResult RemoveFromCart(Cart cart, int productId, string returnUrl)
         {
             Product product = repository.Products.FirstOrDefault(x => x.ProductID == productId);
 
             if (product != null)
-                GetCart().RemoveLine(product);
+                cart.RemoveLine(product);
 
-            return RedirectToAction("Index", returnUtl);
+            return RedirectToAction("Index", new { returnUrl });
         }
 
         private Cart GetCart()

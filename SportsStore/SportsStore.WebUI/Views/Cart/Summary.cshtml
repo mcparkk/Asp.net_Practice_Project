@@ -1,0 +1,13 @@
+﻿@model SportsStore.Domain.Entities.Cart
+
+<div class="navbar-right">
+    @Html.ActionLink("Checkout", "Index", "Cart", new { returnUrl = Request.Url.PathAndQuery }, new { @class = "btn btn-default navbar-btn" })
+</div>
+
+<!-- View의 이름은 컨트롤러의 메소드 명과 동일하게 생성한다.!!-->
+<dic class="navbar-text navbar-right">
+    <b>Your cart:</b>
+    @Model.Lines.Sum(x=>x.Quantity) item(s),
+    @Model.ComputeTatolValue().ToString("c")
+</dic>
+

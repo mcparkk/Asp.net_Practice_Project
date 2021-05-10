@@ -8,6 +8,7 @@
     #cartTable td { vertical-align:middle; }
 </style>
 
+<!-- CheckOut 뷰-->
 <h2>Your Cart</h2>
 <table id ="cartTable" class="table">
     <thead>
@@ -52,5 +53,7 @@
 <div class="text-center">
     <!--리턴-->
     <a class="btn btn-primary" href="@Model.ReturnUrl">Continue Shopping</a>
+    <!-- cart Controller의 Checkout 메소드 실행-->
+    @Html.ActionLink("Checkout now","Checkout", null, new { @class = "btn btn-primary" })
 </div>
 

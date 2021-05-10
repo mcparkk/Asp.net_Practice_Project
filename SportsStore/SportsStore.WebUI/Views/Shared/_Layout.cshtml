@@ -8,11 +8,15 @@
     <title>@ViewBag.Title</title>
 </head>
 <body>
+    <!-- ViewStart 에서 Layout 실행 -> layout.html에 정의된 내용으로 각 controller 실행 -->
     <div class="navbar navbar-inverse" role="navigation">
         <a class="navbar-brand" href="#">SPORTS STORE</a>
+        <!-- 화면 상단 Summary 액션(Cart Controller의 Summary 실행-->
+        @Html.Action("Summary", "Cart")
     </div>
     <div class="row panel">
         <div id="Categories" class="col-xs-3">
+            <!-- 메뉴 내용 액션(Nav controller의 Menu 실행-->
             @Html.Action("Menu","Nav")
         </div>
         <div class="col-xs-8">

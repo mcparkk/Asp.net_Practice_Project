@@ -52,9 +52,14 @@ namespace SportsStore.WebUI.Controllers
             return RedirectToAction("Index", new { returnUrl });
         }
 
+        public PartialViewResult Summary(Cart cart)
+        {
+            return PartialView(cart);
+        }
+
         private Cart GetCart()
         {
-            // 싱글톤 
+            // singleton 
             Cart cart = (Cart)Session["Cart"];
             if (cart == null)
                 cart = new Cart();
@@ -62,5 +67,12 @@ namespace SportsStore.WebUI.Controllers
 
             return cart;
         }
+
+        public ViewResult Checkout()
+        {
+            return View(new ShippingDetails());
+        }
+
+
     }
 }

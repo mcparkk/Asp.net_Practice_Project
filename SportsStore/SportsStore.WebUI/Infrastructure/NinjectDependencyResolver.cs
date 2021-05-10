@@ -8,6 +8,7 @@ using Moq;
 using SportsStore.Domain.Abstract;
 using SportsStore.Domain.Entities;
 using SportsStore.Domain.Concrete;
+using System.Configuration;
 
 namespace SportsStore.WebUI.Infrastructure
 {
@@ -34,8 +35,18 @@ namespace SportsStore.WebUI.Infrastructure
         {
 
             kernel.Bind<IProductRepository>().To<EFProductRepository>();
+
+            // Email setting 정보 바인딩 시 가져오기 -> Web.config 파일에서 파일로 저장할 지 설정
+            EmailSettings emailSettings = new EmailSettings
+            {
+                WriteAsFile = bool.Parse(ConfigurationManager.AppSettings["Email.WriteAsFile"] ?? "false")
+            };
+
+            // IOderProcessor 인터페이스 사용 시 인스턴스는 EmailOrderProcessor 에 주입됨(생성자 매개변수 설정)
+            // 기존 정보에 WriteAsFile 정보만 수정 하여 사용
+            kernel.Bind<IOrderProcessor>().To<EmailOrderProcessor>().WithConstructorArgument("settings", emailSettings);
             
-            
+
             // 바인딩 정보
             //Mock<IProductRepository> mock = new Mock<IProductRepository>();
             //mock.Setup(x => x.Products).Returns(new List<Product>

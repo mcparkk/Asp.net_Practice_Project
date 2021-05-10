@@ -1,0 +1,14 @@
+X-Sender: sportsstore@example.com
+X-Receiver: orders@example.com
+MIME-Version: 1.0
+From: sportsstore@example.com
+To: orders@example.com
+Date: 10 May 2021 23:48:03 +0900
+Subject: New order submmited
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: quoted-printable
+
+A new order has been subbitted=0D=0A---=0D=0AItems=0D=0A1 X Kayak=
+ (subtotal : ?275,000)Total order value: ?275,000---=0D=0AShip to=
+:=0D=0Aadsf=0D=0Aasdf=0D=0A=0D=0A=0D=0Aasdf=0D=0Aasdf=0D=0Asadf=0D=0A=
+asdf=0D=0A---=0D=0AGift wrap: No

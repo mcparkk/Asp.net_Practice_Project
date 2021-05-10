@@ -138,7 +138,7 @@ namespace SportsStore.UnitTests
             Cart cart = new Cart();
 
             //Arrange - 컨트롤러를 생성한다.
-            CartController target = new CartController(mock.Object);
+            CartController target = new CartController(mock.Object , null);
 
             //Act - 카트에 상품을 추가한다.
             target.AddToCart(cart, 1, null);
@@ -162,7 +162,7 @@ namespace SportsStore.UnitTests
             Cart cart = new Cart();
 
             //Arrange - 컨트롤러를 생성한다.
-            CartController target = new CartController(mock.Object);
+            CartController target = new CartController(mock.Object , null);
 
             //Act - 카트에 상품을 추가한다.
             RedirectToRouteResult result = target.AddToCart(cart, 2, "myUrl");
@@ -179,7 +179,7 @@ namespace SportsStore.UnitTests
             Cart cart = new Cart();
 
             //Arrange - 컨트롤러를 생성한다.
-            CartController target = new CartController(null);
+            CartController target = new CartController(null, null);
 
             //Act -Index 액션메서드를 호출한다.
             CartIndexViewModel result = (CartIndexViewModel)target.Index(cart, "myUrl").ViewData.Model;
@@ -187,6 +187,88 @@ namespace SportsStore.UnitTests
             //Assert 
             Assert.AreSame(result.Cart, cart);
             Assert.AreEqual(result.ReturnUrl, "myUrl");
+        }
+
+        // 카트가 빈상태로는 지불 처리가 되지 않는다는 점을 테스트 
+        // Mock 구현 개체에서 ProcessorOrder 메서드가 호출된 적 없다는것 확인
+        // CheckOut메서드가 반환하는 뷰가 기본 뷰인지 확인 
+        [TestMethod]
+        public void Cannot_Checkout_Empty_Cart()
+        {
+            //Arrange - Mock 주문 처리기를 생성한다.
+            Mock<IOrderProcessor> mock = new Mock<IOrderProcessor>();
+            //Arrange - 빈 Cart 개체를 생성한다.
+            Cart cart = new Cart();
+            //Arrange - 배송정보를 생성한다.
+            ShippingDetails shippingDetails = new ShippingDetails();
+            //Arrange - 컨트롤러의 인스턴스를 생성한다.
+            CartController target = new CartController(null, mock.Object);
+
+            //Act 
+            // cart와 shippingDetails는 비어있다!!
+            ViewResult result = target.Checkout(cart, shippingDetails);
+
+            //Assert - 주문이 주문 처리기에 전달되지 않은 것을 확인한다. 
+            // IOrderProcessor 의 Mock구현 개체에서 Processor 메서드가 호출된 적이 없다는 것 확인/ 앞의 메서드 -> time.never() = 실행된 적 없다는 것을 검증
+            // https://jacking75.github.io/csharp_UnitTestMock/
+            mock.Verify(m => m.ProcessOrder(It.IsAny<Cart>(), It.IsAny<ShippingDetails>()), Times.Never());
+
+            //Assert - 메서드가 기본 뷰를 반환했는지 확인한다.
+            // CheckOut메서드가 반환하는 뷰가 기본뷰인지 확인
+            Assert.AreEqual("", result.ViewName);
+
+            //Assert - 유효하지 않은 모델을 뷰에 전달했는지 확인한다.
+            // 뷰에 전달된 모델 상태가 유효하지 않은 지 확인
+            Assert.AreEqual(false, result.ViewData.ModelState.IsValid);
+        }
+
+        // 유효하지 않은 배송정보로 요청시 확인 
+        [TestMethod]
+        public void Cannot_Checkout_Invalid_ShippingDetails()
+        {
+            // Arrange - Mock주문 처리기를 생성한다.
+            Mock<IOrderProcessor> mock = new Mock<IOrderProcessor>();
+            // Arrage - 하나의 상품이 담긴 Cart개체를 생성한다.
+            Cart cart = new Cart();
+            cart.AddItems(new Product(), 1);
+
+            // Arrange - 컨트롤러의 인스턴스를 생성한다.
+            CartController target = new CartController(null, mock.Object);
+            // Arrange - 모델에 오류를 추가한다.
+            target.ModelState.AddModelError("error", "error");
+
+            // Act - 지불 처리를 시도한다.
+            ViewResult result = target.Checkout(cart, new ShippingDetails());
+
+            // Assert - 주문이 주문처리기에 전달되지 않은 것을 확인한다.
+            mock.Verify(m => m.ProcessOrder(It.IsAny<Cart>(), It.IsAny<ShippingDetails>()), Times.Never());
+            // Assert - 메서드가 기본 뷰를 반환했는지 확인한다.
+            Assert.AreEqual("", result.ViewName);
+            // Assert - 유효하지 않은 모델을 뷰에 전달하는지 확인한다.
+            Assert.AreEqual(false, result.ViewData.ModelState.IsValid);
+        }
+        
+        [TestMethod]
+        public void Can_Checkout_And_Submit_Order()
+        {
+            // Arrange - Mock 주문 처리기를 생성한다.
+            Mock<IOrderProcessor> mock = new Mock<IOrderProcessor>();
+            // Arrange - 하나의 상품이 담긴 Cart 개체를 생성한다.
+            Cart cart = new Cart();
+            cart.AddItems(new Product(), 1);
+
+            // Arrange - 컨트롤러의 인스턴스를 생성한다.
+            CartController target = new CartController(null, mock.Object);
+            
+            // Act - 지불 처리를 시도한다.
+            ViewResult result = target.Checkout(cart, new ShippingDetails());
+
+            // Assert - 주문 처리기에 주문이 전달된것을 확인한다.
+            mock.Verify(x => x.ProcessOrder(It.IsAny<Cart>(), It.IsAny<ShippingDetails>()), Times.Once);
+            // Assert - 메서드가 Completed 뷰를 반환하는지 확인한다.
+            Assert.AreEqual("Completed", result.ViewName);
+            // Assert - 유효한 모델을 뷰에 전달하는지 확인한다.
+            Assert.AreEqual(true, result.ViewData.ModelState.IsValid);
         }
     }
 }

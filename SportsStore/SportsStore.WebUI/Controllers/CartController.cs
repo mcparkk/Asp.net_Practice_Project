@@ -12,12 +12,15 @@ namespace SportsStore.WebUI.Controllers
     public class CartController : Controller
     {
         // GET: Cart
-
+        // 맴버변수는 언더바로 syntax 지키자
         private IProductRepository repository;
+        private IOrderProcessor orderProcessor;
 
-        public CartController(IProductRepository repo)
+        // 생성자를 여러개로 다형성을 지키는것은 안될까? 
+        public CartController(IProductRepository repo, IOrderProcessor proc)
         {
             repository = repo;
+            orderProcessor = proc;
         }
 
         public ViewResult Index(Cart cart, string returnUrl)
@@ -73,6 +76,34 @@ namespace SportsStore.WebUI.Controllers
             return View(new ShippingDetails());
         }
 
+        // [Complete order] 버튼 클릭 시 POST요청을 처리
+        // shippingDetails 매개변수는 Http 폼 데이터를 통해서 자동으로 생성 
+        // Cart 매개변수는 사용자 지정 모델 바인더를 통해 생성된다. 
+        [HttpPost]
+        public ViewResult Checkout(Cart cart, ShippingDetails shippingDetails)
+        {
+            // cart 검증 
+            if(cart.Lines.Count() == 0)
+            {
+                // cart가 비어있으면 폼데이터에 에러 추가 => 결론적으로 아래 검증에서 걸러진다.
+                ModelState.AddModelError("", "Sorry, your cart is empty!");
+            }
+            
+            // ShippingDetails 검증
+            //ModelState.IsValid
+            // 요약:
+            //     모델 상태 사전의 이 인스턴스가 유효한지를 나타내는 값을 가져옵니다.
+            if (ModelState.IsValid)
+            {
+                orderProcessor.ProcessOrder(cart, shippingDetails);
+                cart.Clear();
+                return View("Completed");
+            }
+            else
+            {
+                return View(shippingDetails);
+            }
+        }
 
     }
 }

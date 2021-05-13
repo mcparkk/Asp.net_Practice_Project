@@ -95,6 +95,7 @@ namespace SportsStore.Domain.Concrete
                 //    , "New order submitted!"                                                // 제목
                 //    , emailSettings.WriteAsFile ? utfbody.ToString() : body.ToString());    // 본문 (파일 형식으로 저장할시 UTF-8로 변환된 body를 추가함 
 
+                //https://www.codeproject.com/Articles/32434/Adding-Save-functionality-to-System-Net-Mail-MailM  파일 이름 설정할 수 있도록 확장 
                 // 파일로 작성시
                 if (emailSettings.WriteAsFile)
                 {
